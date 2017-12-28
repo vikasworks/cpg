@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="ERROR">
+	<Properties>
+		<Property name="folderName">/home/rhythem/Desktop/logss</Property>
+	</Properties>
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="[%d{ISO6081}][%X{userid}][%X{searchid}][%X{PNR}][%X{UUID}][%-level][%c][%L]%msg%n"></PatternLayout>
+		</Console>
+		<RollingRandomAccessFile name="Aggregator" fileName="${folderName}/aggregator.log"
+			filePattern="${folderName}/$${date:dd-MM-yyyy}/aggregator-%d{dd-MM-yyyy}.log.gz"
+			append="true">
+			<PatternLayout pattern="[%d{ISO6081}][%X{userid}][%X{searchid}][%X{PNR}][%X{UUID}][%-level][%c][%L]%msg%n"></PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
+			</Policies>
+		</RollingRandomAccessFile>
+	</appenders>
+	<loggers>
+		<logger name="com.etl" level="DEBUG" additivity="false">
+			<appender-ref ref="Console" />
+			<appender-ref ref="Aggregator" />
+		</logger>
+		<root level="ERROR">
+			<appender-ref ref="Console" />
+			<appender-ref ref="Aggregator" />
+		</root>
+	</loggers>
+</configuration>

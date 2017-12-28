@@ -1,0 +1,89 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"){
+	    	exclude module : 'spring-boot-starter-logging'
+			exclude module: 'logback-classic'
+	    }
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'org.springframework.boot'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web:1.5.2.RELEASE'){
+    	exclude module : 'spring-boot-starter-logging'
+		exclude module: 'logback-classic'
+    }
+    compile('org.springframework.boot:spring-boot-starter-security:1.5.2.RELEASE'){
+    	exclude module : 'spring-boot-starter-logging'
+		exclude module: 'logback-classic'
+    }
+    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.2.RELEASE'
+    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.5.2.RELEASE'
+
+	compile project(':supplier-commons-paymist')
+  	runtime project(':supplier-commons-paymist')
+
+	//compile("org.springframework.boot:spring-boot-starter-log4j2")
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.7'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.7'
+    // Added for async logging
+    compile group: 'com.lmax', name: 'disruptor', version: '3.3.6'
+    runtime group: 'com.lmax', name: 'disruptor', version: '3.3.6'
+
+    compile 'org.springframework:spring-context:4.2.6.RELEASE'
+    compile 'org.springframework:spring-webmvc:4.2.6.RELEASE'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
+    compile group: 'com.typesafe.akka', name: 'akka-actor_2.11', version: '2.4.1'
+    compile 'io.jsonwebtoken:jjwt:0.7.0'
+    compile group: 'javax.mail', name: 'mail', version: '1.4'
+    compile group: 'freemarker', name: 'freemarker', version: '2.3.9'
+    compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '4.2.2.RELEASE'
+    compile group: 'org.apache.commons', name: 'commons-email', version: '1.4'
+    compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.9'
+    compile group: 'org.jmockit', name: 'jmockit', version: '1.8'
+    compile 'io.jsonwebtoken:jjwt:0.7.0'
+	compile group: 'com.ning', name: 'async-http-client', version: '1.9.40'
+	compile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'
+	compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.0.7'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+
+    runtime('org.springframework.boot:spring-boot-devtools')
+	compileOnly('org.springframework.boot:spring-boot-configuration-processor')
+
+    testCompile 'junit:junit:4.12'
+}
+
+springBoot {
+    executable = true
+}
+
+eclipse {
+  wtp {
+  	facet {
+  		facet name: 'jst.web', version: '2.4'
+  	}
+  
+    component {
+      contextPath = 'aggregator-api'
+    }
+  }
+}
