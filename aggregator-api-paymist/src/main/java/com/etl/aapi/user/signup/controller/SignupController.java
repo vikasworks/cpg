@@ -4,27 +4,33 @@ import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.etl.aapi.common.data.APIConstant;
 import com.etl.aapi.common.data.StatusResponse;
 import com.etl.aapi.common.exception.ServiceException;
 import com.etl.aapi.user.data.SignUpData;
+import com.etl.aapi.user.signup.data.DuplicateUserFound;
 import com.etl.aapi.user.signup.service.SignupService;
 import com.etl.aapi.util.ErrorUtils;
 import com.etl.aapi.util.JsonUtils;
 
+@CrossOrigin
 @RestController
 public class SignupController {
-	
+
 	private Logger log = LogManager.getLogger(SignupController.class);
 	private SignupService signupService;
 	private String event = "";
@@ -33,6 +39,7 @@ public class SignupController {
 	public void setSignupService(SignupService signupService) {
 		this.signupService = signupService;
 	}
+
 	@RequestMapping(value = "/user/sign-up", method = RequestMethod.POST)
 	public ResponseEntity<?> registerUser(@RequestBody @Valid SignUpData user, BindingResult result)
 			throws ServiceException {
@@ -64,6 +71,18 @@ public class SignupController {
 		log.info("New SignUp Alert", "Process End for " + user.getUserName());
 		log.info("Response JSON SignUp data :: " + jsonSignupResponse);
 		return new ResponseEntity<>(signupResponse, new HttpHeaders(), HttpStatus.OK);
+	}
+
+	
+	@RequestMapping(value = "user/check-already-exist", method = RequestMethod.GET)
+	public ResponseEntity<?> checkIfEmailExist(@RequestParam("email") @NotEmpty @Email String email)
+			throws ServiceException {
+		log.info("API name ser/check-already-exist ;params; email: " + email + " - starts");
+		event = "check duplicate user";
+		boolean message = signupService.isEmailExist(email);
+		DuplicateUserFound duplicateUserFound = new DuplicateUserFound(email, message);
+		log.info("API name ser/check-already-exist ;params; email: " + email + " - ends");
+		return new ResponseEntity<>(duplicateUserFound, new HttpHeaders(), HttpStatus.OK);
 	}
 
 }

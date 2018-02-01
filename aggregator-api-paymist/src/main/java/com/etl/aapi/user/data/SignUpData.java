@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-@JsonIgnoreProperties(value = { "password" })
+// @JsonIgnoreProperties(value = { "password" })
 public class SignUpData implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -104,6 +104,4 @@ public class SignUpData implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-
 }

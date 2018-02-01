@@ -22,13 +22,13 @@ import com.mysql.jdbc.Statement;
 @Repository
 public class SignupDao extends AbstractMysqlDao{
 	private Logger log = LogManager.getLogger(SignupDao.class);
-	private final String QUERY_FOR_USER = "insert into `user`(`user_id,password,user_name,contact_no,company_address,email_id,created_on) values(?,?,?,?,?,?,?)";
-	private final String SELECT_EMAIL = "select count(*) from `user` where `email`=?";
+	private final String QUERY_FOR_USER = "insert into `sign_up_user`(`user_id`,`password`,`user_name`,`contact_no`,`company_address`,`email_id`,`created_on`) values(?,?,?,?,?,?,?)";
+	private final String SELECT_EMAIL = "select count(*) from `sign_up_user` where `email_id`=?";
 	
 	@Transactional(rollbackFor = DataAccessException.class)
 	public void addSignupData(SignUpData signUpData) throws DataAccessException {
 		try {
-			int id = insertUserData(signUpData);
+			insertUserData(signUpData);
 		} catch (Exception e) {
 			// TODO: handle exception
 			log.error("Error occur while registering user due to-" + e.getMessage());
@@ -63,5 +63,20 @@ public class SignupDao extends AbstractMysqlDao{
 			throw new DataAccessException(e.getMessage(), e);
 		}
 	}
-
+	
+	public boolean isEmailExist(String email) throws DataAccessException {
+		try {
+			log.debug("SignupDao; isEmailExist; param email " + email + " -starts");
+			int count = getJdbcTemplate().queryForObject(SELECT_EMAIL, new Object[] {email}, Integer.class);
+			log.debug("SignupDao; isEmailExist; param email " + email + " -end");
+			if(count == 0) {
+				return false;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			log.error("Error occur while fetching email data due to: " + e.getMessage(), e);
+			throw new DataAccessException(e.getMessage(), e);
+		}
+		return true;
+	}
 }

@@ -34,6 +34,7 @@ public class SignupServiceImpl implements SignupService {
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 	}
@@ -44,9 +45,17 @@ public class SignupServiceImpl implements SignupService {
 	}
 	@Override
 	public boolean isEmailExist(String email) throws ServiceException {
-		// TODO Auto-generated method stub
+		try {
+			boolean isEmailExist = signupDao.isEmailExist(email);
+			if(isEmailExist) {
+				return true;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return false;
 	}
+	
 	@Override
 	public boolean isUserExist(String email) throws ServiceException {
 		// TODO Auto-generated method stub
